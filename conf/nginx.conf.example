@@ -87,62 +87,6 @@ http {
         orange.init_worker()
     }
 
-    # main server
-    server {
-        listen       80;
-        #server_name  my_domain.com;
-        location = /favicon.ico {
-            log_not_found off;
-            access_log off;
-        }
-
-        location / {
-
-            set $upstream_host $host;
-            set $upstream_url 'http://default_upstream';
-
-            rewrite_by_lua_block {
-                local orange = context.orange
-                orange.redirect()
-                orange.rewrite()
-            }
-
-            access_by_lua_block {
-                local orange = context.orange
-                orange.init_cookies()
-                orange.access()
-            }
-
-            # proxy
-            proxy_http_version 1.1;
-            proxy_set_header Connection "";
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Scheme $scheme;
-            proxy_set_header Host $upstream_host;
-            proxy_pass $upstream_url;
-
-
-            header_filter_by_lua_block {
-                local orange = context.orange
-                orange.header_filter()
-            }
-
-            body_filter_by_lua_block {
-                local orange = context.orange
-                orange.body_filter()
-            }
-
-            log_by_lua_block {
-                local orange = context.orange
-                orange.log()
-            }
-        }
-
-        location /robots.txt {
-            return 200 'User-agent: *\nDisallow: /';
-        }
-    }
 
     # default upstream server
     server {
