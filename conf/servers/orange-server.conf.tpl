@@ -40,7 +40,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Scheme $scheme;
         proxy_set_header X-Forwarded-Host $server_name;
-        proxy_pass http://orange;                   # modify
+        proxy_pass http://orange_upstream;                   # modify
 
         header_filter_by_lua_block {
             local orange = context.orange
