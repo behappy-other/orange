@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name orange.com;                            # modify
+    server_name orange-xiaowu.org;                            # modify
     charset utf-8;
 
     # gzip config.
