@@ -26,7 +26,6 @@ server {
             orange.rewrite()
         }
 
-        # header里不包含brand信息的网关直接返回404 不进入到后续服务
         access_by_lua_block {
             local orange = context.orange
             orange.access()
