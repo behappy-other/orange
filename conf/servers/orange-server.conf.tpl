@@ -1,4 +1,3 @@
-access_by_lua_file /usr/local/nginx/conf/waf/waf.lua;
 server {
     listen 80;
     server_name orange-xiaowu.org;                            # modify
