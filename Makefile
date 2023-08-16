@@ -22,6 +22,8 @@ help:
 dev:
 	$(INSTALL) conf/nginx.conf.example conf/nginx.conf
 	$(INSTALL) conf/orange.conf.example conf/orange.conf
+	$(INSTALL) conf/servers/orange-server.conf.tpl conf/servers/orange-server.conf
+	$(INSTALL) conf/upstreams/orange-upstream.conf.tpl conf/upstreams/orange-upstream.conf
 	$(INSTALL) install/orange-v0.8.1.sql conf/orange-v0.8.1.sql
 
 
