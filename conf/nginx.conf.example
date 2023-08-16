@@ -98,7 +98,7 @@ http {
 
         location / {
 
-            set $upstream_host $host;
+            # set $upstream_host $host;
             set $upstream_url 'http://default_upstream';
 
             rewrite_by_lua_block {
