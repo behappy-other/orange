@@ -20,6 +20,9 @@ help:
 ### dev:          Create Orange development ENV
 .PHONY: dev
 dev:
+	$(REMOVE) -f conf/*.conf
+	$(REMOVE) -f conf/servers/*.conf
+	$(REMOVE) -f conf/upstreams/*.conf
 	$(INSTALL) conf/nginx.conf.example conf/nginx.conf
 	$(INSTALL) conf/orange.conf.example conf/orange.conf
 	$(INSTALL) conf/servers/orange-server.conf.tpl conf/servers/orange-server.conf
