@@ -43,7 +43,7 @@ local function is_authorized(signature_name, secretKey,extractor)
         local md5 = require("resty.md5")
         local md5 = md5:new()
         if not md5 then
-            ngx.log(ngx.ERR,'server error exec md5:new faild')
+            require("orange.utils.sputils").log(ngx.ERR,'server error exec md5:new faild')
             return false
         end
 
@@ -51,7 +51,7 @@ local function is_authorized(signature_name, secretKey,extractor)
             if req_val[v] then
                 local ok = md5:update(req_val[v])
                 if not ok then
-                    ngx.log(ngx.ERR,'server error exec md5:update faild')
+                    require("orange.utils.sputils").log(ngx.ERR,'server error exec md5:update faild')
                     return false
                 end
             end
@@ -59,7 +59,7 @@ local function is_authorized(signature_name, secretKey,extractor)
 
         local ok = md5:update(secretKey)
         if not ok then
-            ngx.log(ngx.ERR,'server error exec md5:update faild')
+            require("orange.utils.sputils").log(ngx.ERR,'server error exec md5:update faild')
             return false
         end
 
@@ -89,7 +89,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
             if pass then
                 if handle.credentials then
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[SignatureAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[SignatureAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
                     local credentials = handle.credentials
                     local authorized = is_authorized(credentials.signame,credentials.secretkey,rule.extractor)
@@ -101,7 +101,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
                     end
                 else
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[SignatureAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[SignatureAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
                     ngx.exit(tonumber(handle.code) or 401)
                     return true
@@ -137,7 +137,7 @@ function SignatureAuthHandler:access(conf)
     local ngx_var_uri = ngx.var.uri
 
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[SignatureAuth][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[SignatureAuth][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -149,7 +149,7 @@ function SignatureAuthHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[SignatureAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[SignatureAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "signature_auth", ngx_var_uri)
@@ -159,7 +159,7 @@ function SignatureAuthHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[SignatureAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[SignatureAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

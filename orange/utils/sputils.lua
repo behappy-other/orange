@@ -108,7 +108,7 @@ end
 function _M.dnsToIp(hostname)
     local ip, resolved = socket.dns.toip(hostname)
     if resolved then
-        ngx.log(ngx.INFO,"dnsToIp - resolve ip : ",ip)
+        _M.log(ngx.INFO,"dnsToIp - resolve ip : ",ip)
         return ip
     end
     return "127.0.0.1"

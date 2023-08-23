@@ -17,7 +17,7 @@ local _M = {}
 --end
 
 function _M.init(config)
-    ngx.log(ngx.ERR, "node init")
+    require("orange.utils.sputils").log(ngx.ERR, "node init")
 end
 
 -- 使用headless方式
@@ -59,11 +59,11 @@ local function sync_node_plugins(node, plugins)
             })
 
             if not resp or err then
-                ngx.log(ngx.ERR, plugin .. " sync err", err)
+                require("orange.utils.sputils").log(ngx.ERR, plugin .. " sync err", err)
                 sync_result[plugin] = false
             else
                 sync_result[plugin] = tonumber(resp.status) == 200
-                ngx.log(ngx.ERR, "status" .. resp.status, sync_result[plugin])
+                require("orange.utils.sputils").log(ngx.ERR, "status" .. resp.status, sync_result[plugin])
             end
 
             httpc:close()
@@ -91,7 +91,7 @@ function _M.sync(plugins, store)
     local sync_result = sync_node_plugins(node, plugins)
 
     if not result then
-        ngx.log(ngx.ERR, "SYNC", err)
+        require("orange.utils.sputils").log(ngx.ERR, "SYNC", err)
     end
 
     return sync_result

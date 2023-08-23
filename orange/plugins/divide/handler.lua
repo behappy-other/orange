@@ -34,7 +34,7 @@ local function filter_rules(sid, plugin, ngx_var, ngx_var_uri, ngx_var_host)
             -- handle阶段
             if pass then
                 if rule.log == true then
-                    ngx.log(ngx.INFO, "[Divide-Match-Rule] ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide-Match-Rule] ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
                 end
 
                 local extractor_type = rule.extractor.type
@@ -48,16 +48,16 @@ local function filter_rules(sid, plugin, ngx_var, ngx_var_uri, ngx_var_host)
                     --local args = ngx.encode_args(ngx.req.get_uri_args()) if #args > 0 then rule.upstream_url = rule.upstream_url.. '?' .. args end
 
                     ngx_var.upstream_url = handle_util.build_upstream_url(extractor_type, rule.upstream_url, variables, plugin)
-                    ngx.log(ngx.INFO, "[Divide-Match-Rule:upstream] ", rule.name, " extractor_type:", extractor_type,
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide-Match-Rule:upstream] ", rule.name, " extractor_type:", extractor_type,
                         " upstream_host:", ngx_var.upstream_host, " upstream_url:", ngx_var.upstream_url)
                 else
-                    ngx.log(ngx.INFO, "[Divide-Match-Rule:error] no upstream host or url. ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide-Match-Rule:error] no upstream host or url. ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
                 end
 
                 return true
             else
                 if rule.log == true then
-                    ngx.log(ngx.INFO, "[Divide-NotMatch-Rule] ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide-NotMatch-Rule] ", rule.name, " host:", ngx_var_host, " uri:", ngx_var_uri)
                 end
             end
         end
@@ -92,7 +92,7 @@ function DivideHandler:access(conf)
     local ngx_var_host = ngx_var.host
 
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[Divide][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[Divide][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -104,7 +104,7 @@ function DivideHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Divide][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "divide", ngx_var, ngx_var_uri, ngx_var_host)
@@ -114,7 +114,7 @@ function DivideHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Divide][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Divide][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

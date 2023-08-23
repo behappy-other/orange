@@ -20,11 +20,11 @@ local function jwt_auth(credentials, jwttoken)
     local secret = credentials.secret
     local jwtobj = jwt:verify(secret, jwttoken)
     if jwtobj["verified"] then
-        for i, payload in ipairs(credentials.payload) do  
+        for i, payload in ipairs(credentials.payload) do
             if payload.type == 1 then
                 ngx.req.set_header(payload.target_key, jwtobj.payload[payload.key])
             end
-        end 
+        end
 
         return true
     end
@@ -76,9 +76,9 @@ local function filter_rules(sid, plugin, ngx_var_uri, headers, query)
                 local handle = rule.handle
                 if handle.credentials then
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[JwtAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[JwtAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
-                     
+
                     local authorized = is_authorized(handle.credentials, headers, query)
                     if authorized then
                         return true
@@ -88,7 +88,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, headers, query)
                     end
                 else
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[JwtAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[JwtAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
                     ngx.exit(tonumber(handle.code) or 401)
 
@@ -112,12 +112,12 @@ end
 
 function JwtAuthHandler:access(conf)
     JwtAuthHandler.super.access(self)
-    
+
     local enable = orange_db.get("jwt_auth.enable")
     local meta = orange_db.get_json("jwt_auth.meta")
     local selectors = orange_db.get_json("jwt_auth.selectors")
     local ordered_selectors = meta and meta.selectors
-    
+
     if not enable or enable ~= true or not meta or not ordered_selectors or not selectors then
         return
     end
@@ -128,10 +128,10 @@ function JwtAuthHandler:access(conf)
     local ngx_var_uri = ngx.var.uri
 
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[JwtAuth][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[JwtAuth][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
-            local selector_pass 
+            local selector_pass
             if selector.type == 0 then -- 全流量选择器
                 selector_pass = true
             else
@@ -140,7 +140,7 @@ function JwtAuthHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[JwtAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[JwtAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "jwt_auth", ngx_var_uri, headers, query)
@@ -149,7 +149,7 @@ function JwtAuthHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[JwtAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[JwtAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
 
@@ -161,7 +161,7 @@ function JwtAuthHandler:access(conf)
             end
         end
     end
-    
+
 end
 
 return JwtAuthHandler

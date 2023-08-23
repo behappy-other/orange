@@ -47,7 +47,7 @@ function _M.get_rules_of_selector(plugin, store, rule_ids)
         params = {"rule" }
     })
     if err then
-        ngx.log(ngx.ERR, "error to get rules of selector, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "error to get rules of selector, err:", err)
         return {}
     end
 
@@ -90,7 +90,7 @@ function _M.delete_rules_of_selector(plugin, store, rule_ids)
     if delete_result then
         return true
     else
-        ngx.log(ngx.ERR, "delete rules of selector err, ", rule_ids)
+        require("orange.utils.sputils").log(ngx.ERR, "delete rules of selector err, ", rule_ids)
         return false
     end
 end
@@ -107,7 +107,7 @@ function _M.delete_selector(plugin, store, selector_id)
     if delete_result then
         return true
     else
-        ngx.log(ngx.ERR, "delete selector err, ", selector_id)
+        require("orange.utils.sputils").log(ngx.ERR, "delete selector err, ", selector_id)
         return false
     end
 end
@@ -121,7 +121,7 @@ function _M.get_meta(plugin, store)
     if not err and meta and type(meta) == "table" and #meta > 0 then
         return meta[1]
     else
-        ngx.log(ngx.ERR, "[FATAL ERROR]meta not found while it must exist.")
+        require("orange.utils.sputils").log(ngx.ERR, "[FATAL ERROR]meta not found while it must exist.")
         return nil
     end
 end
@@ -133,7 +133,7 @@ function _M.update_meta(plugin, store, meta)
 
     local meta_json_str = json.encode(meta)
     if not meta_json_str then
-        ngx.log(ngx.ERR, "encode error: meta to save is not json format.")
+        require("orange.utils.sputils").log(ngx.ERR, "encode error: meta to save is not json format.")
         return false
     end
 
@@ -152,7 +152,7 @@ function _M.update_selector(plugin, store, selector)
 
     local selector_json_str = json.encode(selector)
     if not selector_json_str then
-        ngx.log(ngx.ERR, "encode error: selector to save is not json format.")
+        require("orange.utils.sputils").log(ngx.ERR, "encode error: selector to save is not json format.")
         return false
     end
 
@@ -171,18 +171,18 @@ function _M.update_local_meta(plugin, store)
     })
 
     if err then
-        ngx.log(ngx.ERR, "error to find meta from storage when updating local meta, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find meta from storage when updating local meta, err:", err)
         return false
     end
 
     if meta and type(meta) == "table" and #meta > 0 then
         local success, err, forcible = orange_db.set(plugin .. ".meta", meta[1].value or '{}')
         if err or not success then
-            ngx.log(ngx.ERR, "update local plugin's meta error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "update local plugin's meta error, err:", err)
             return false
         end
     else
-        ngx.log(ngx.ERR, "can not find meta from storage when updating local meta")
+        require("orange.utils.sputils").log(ngx.ERR, "can not find meta from storage when updating local meta")
     end
 
     return true
@@ -195,7 +195,7 @@ function _M.update_local_selectors(plugin, store)
     })
 
     if err then
-        ngx.log(ngx.ERR, "error to find selectors from storage when updating local selectors, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find selectors from storage when updating local selectors, err:", err)
         return false
     end
 
@@ -207,14 +207,14 @@ function _M.update_local_selectors(plugin, store)
 
         local success, err, forcible = orange_db.set_json(plugin .. ".selectors", to_update_selectors)
         if err or not success then
-            ngx.log(ngx.ERR, "update local plugin's selectors error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "update local plugin's selectors error, err:", err)
             return false
         end
     else
-        ngx.log(ngx.ERR, "the size of selectors from storage is 0 when updating local selectors")
+        require("orange.utils.sputils").log(ngx.ERR, "the size of selectors from storage is 0 when updating local selectors")
         local success, err, forcible = orange_db.set_json(plugin .. ".selectors", {})
         if err or not success then
-            ngx.log(ngx.ERR, "update local plugin's selectors error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "update local plugin's selectors error, err:", err)
             return false
         end
     end
@@ -224,13 +224,13 @@ end
 
 function _M.update_local_selector_rules(plugin, store, selector_id)
     if not selector_id then
-        ngx.log(ngx.ERR, "error to find selector from storage when updating local selector rules, selector_id is nil")
+        require("orange.utils.sputils").log(ngx.ERR, "error to find selector from storage when updating local selector rules, selector_id is nil")
         return false
     end
 
     local selector = _M.get_selector(plugin, store, selector_id)
     if not selector or not selector.value then
-        ngx.log(ngx.ERR, "error to find selector from storage when updating local selector rules, selector_id:", selector_id)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find selector from storage when updating local selector rules, selector_id:", selector_id)
         return false
     end
 
@@ -240,7 +240,7 @@ function _M.update_local_selector_rules(plugin, store, selector_id)
 
     local success, err, forcible = orange_db.set_json(plugin .. ".selector." .. selector_id .. ".rules", rules)
     if err or not success then
-        ngx.log(ngx.ERR, "update local rules of selector error, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "update local rules of selector error, err:", err)
         return false
     end
 
@@ -286,13 +286,13 @@ end
 -- ########################### local cache init start #############################
 function _M.init_rules_of_selector(plugin, store, selector_id)
     if not selector_id then
-        ngx.log(ngx.ERR, "error: selector_id is nil")
+        require("orange.utils.sputils").log(ngx.ERR, "error: selector_id is nil")
         return false
     end
 
     local selector = _M.get_selector(plugin, store, selector_id)
     if not selector or not selector.value then
-        ngx.log(ngx.ERR, "error to find selector from storage when initializing plugin[" .. plugin .. "] local selector rules, selector_id:", selector_id)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find selector from storage when initializing plugin[" .. plugin .. "] local selector rules, selector_id:", selector_id)
         return false
     end
 
@@ -302,7 +302,7 @@ function _M.init_rules_of_selector(plugin, store, selector_id)
 
     local success, err, forcible = orange_db.set_json(plugin .. ".selector." .. selector_id .. ".rules", rules)
     if err or not success then
-        ngx.log(ngx.ERR, "init plugin[" .. plugin .. "] local rules of selector error, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "init plugin[" .. plugin .. "] local rules of selector error, err:", err)
         return false
     end
 
@@ -317,7 +317,7 @@ function _M.init_enable_of_plugin(plugin, store)
     })
 
     if err then
-        ngx.log(ngx.ERR, "Load `enable` of plugin[" .. plugin .. "], error: ", err)
+        require("orange.utils.sputils").log(ngx.ERR, "Load `enable` of plugin[" .. plugin .. "], error: ", err)
         return false
     end
 
@@ -337,18 +337,18 @@ function _M.init_meta_of_plugin(plugin, store)
     })
 
     if err then
-        ngx.log(ngx.ERR, "error to find meta from storage when initializing plugin[" .. plugin .. "] local meta, err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find meta from storage when initializing plugin[" .. plugin .. "] local meta, err:", err)
         return false
     end
 
     if meta and type(meta) == "table" and #meta > 0 then
         local success, err, forcible = orange_db.set(plugin .. ".meta", meta[1].value or '{}')
         if err or not success then
-            ngx.log(ngx.ERR, "init local plugin[" .. plugin .. "] meta error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "init local plugin[" .. plugin .. "] meta error, err:", err)
             return false
         end
     else
-        ngx.log(ngx.ERR, "can not find meta from storage when initializing plugin[" .. plugin .. "] local meta")
+        require("orange.utils.sputils").log(ngx.ERR, "can not find meta from storage when initializing plugin[" .. plugin .. "] local meta")
     end
 
     return true
@@ -361,7 +361,7 @@ function _M.init_selectors_of_plugin(plugin, store)
     })
 
     if err then
-        ngx.log(ngx.ERR, "error to find selectors from storage when initializing plugin[" .. plugin .. "], err:", err)
+        require("orange.utils.sputils").log(ngx.ERR, "error to find selectors from storage when initializing plugin[" .. plugin .. "], err:", err)
         return false
     end
 
@@ -379,14 +379,14 @@ function _M.init_selectors_of_plugin(plugin, store)
 
         local success, err, forcible = orange_db.set_json(plugin .. ".selectors", to_update_selectors)
         if err or not success then
-            ngx.log(ngx.ERR, "init local plugin[" .. plugin .. "] selectors error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "init local plugin[" .. plugin .. "] selectors error, err:", err)
             return false
         end
     else
-        ngx.log(ngx.ERR, "the size of selectors from storage is 0 when initializing plugin[" .. plugin .. "] local selectors")
+        require("orange.utils.sputils").log(ngx.ERR, "the size of selectors from storage is 0 when initializing plugin[" .. plugin .. "] local selectors")
         local success, err, forcible = orange_db.set_json(plugin .. ".selectors", {})
         if err or not success then
-            ngx.log(ngx.ERR, "init local plugin[" .. plugin .. "] selectors error, err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "init local plugin[" .. plugin .. "] selectors error, err:", err)
             return false
         end
     end
@@ -408,7 +408,7 @@ function _M.compose_plugin_data(store, plugin)
         })
 
         if err then
-            ngx.log(ngx.ERR, "Load `enable` of plugin[" .. plugin .. "], error: ", err)
+            require("orange.utils.sputils").log(ngx.ERR, "Load `enable` of plugin[" .. plugin .. "], error: ", err)
             return false
         end
 
@@ -425,14 +425,14 @@ function _M.compose_plugin_data(store, plugin)
         })
 
         if err then
-            ngx.log(ngx.ERR, "error to find meta from storage when fetching data of plugin[" .. plugin .. "], err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "error to find meta from storage when fetching data of plugin[" .. plugin .. "], err:", err)
             return false
         end
 
         if meta and type(meta) == "table" and #meta > 0 then
             data[plugin .. ".meta"] = json.decode(meta[1].value) or {}
         else
-            ngx.log(ngx.ERR, "can not find meta from storage when fetching data of plugin[" .. plugin .. "]")
+            require("orange.utils.sputils").log(ngx.ERR, "can not find meta from storage when fetching data of plugin[" .. plugin .. "]")
             return false
         end
 
@@ -443,7 +443,7 @@ function _M.compose_plugin_data(store, plugin)
         })
 
         if err then
-            ngx.log(ngx.ERR, "error to find selectors from storage when fetching data of plugin[" .. plugin .. "], err:", err)
+            require("orange.utils.sputils").log(ngx.ERR, "error to find selectors from storage when fetching data of plugin[" .. plugin .. "], err:", err)
             return false
         end
 
@@ -455,13 +455,13 @@ function _M.compose_plugin_data(store, plugin)
                 -- init this selector's rules local cache
                 local selector_id = s.key
                 if not selector_id then
-                    ngx.log(ngx.ERR, "error: selector_id is nil")
+                    require("orange.utils.sputils").log(ngx.ERR, "error: selector_id is nil")
                     return false
                 end
 
                 local selector = _M.get_selector(plugin, store, selector_id)
                 if not selector or not selector.value then
-                    ngx.log(ngx.ERR, "error to find selector from storage when fetch plugin[" .. plugin .. "] selector rules, selector_id:", selector_id)
+                    require("orange.utils.sputils").log(ngx.ERR, "error to find selector from storage when fetch plugin[" .. plugin .. "] selector rules, selector_id:", selector_id)
                     return false
                 end
 
@@ -473,7 +473,7 @@ function _M.compose_plugin_data(store, plugin)
 
             data[plugin .. ".selectors"]= to_update_selectors
         else
-            ngx.log(ngx.ERR, "the size of selectors from storage is 0 when fetching data of plugin[" .. plugin .. "] selectors")
+            require("orange.utils.sputils").log(ngx.ERR, "the size of selectors from storage is 0 when fetching data of plugin[" .. plugin .. "] selectors")
             data[plugin .. ".selectors"] = {}
         end
 
@@ -483,7 +483,7 @@ function _M.compose_plugin_data(store, plugin)
     end)
 
     if not ok or e then
-        ngx.log(ngx.ERR, "[fetch plugin's data error], plugin:", plugin, " error:", e)
+        require("orange.utils.sputils").log(ngx.ERR, "[fetch plugin's data error], plugin:", plugin, " error:", e)
         return false
     end
 
@@ -496,7 +496,7 @@ function _M.load_data_by_mysql(store, plugin)
     ok = xpcall(function()
         local v = plugin
         if not v or v == "" then
-            ngx.log(ngx.ERR, "params error, the `plugin` is nil")
+            require("orange.utils.sputils").log(ngx.ERR, "params error, the `plugin` is nil")
             return false
         end
 
@@ -505,20 +505,20 @@ function _M.load_data_by_mysql(store, plugin)
         elseif v == "kvstore" then
             local init_enable = _M.init_enable_of_plugin(v, store)
             if not init_enable then
-                ngx.log(ngx.ERR, "load data of plugin[" .. v .. "] error, init_enable:", init_enable)
+                require("orange.utils.sputils").log(ngx.ERR, "load data of plugin[" .. v .. "] error, init_enable:", init_enable)
                 return false
             else
-                ngx.log(ngx.INFO, "load data of plugin[" .. v .. "] success")
+                require("orange.utils.sputils").log(ngx.INFO, "load data of plugin[" .. v .. "] success")
             end
         else -- ignore `stat` and `kvstore`
             local init_enable = _M.init_enable_of_plugin(v, store)
             local init_meta = _M.init_meta_of_plugin(v, store)
             local init_selectors_and_rules = _M.init_selectors_of_plugin(v, store)
             if not init_enable or not init_meta or not init_selectors_and_rules then
-                ngx.log(ngx.ERR, "load data of plugin[" .. v .. "] error, init_enable:", init_enable, " init_meta:", init_meta, " init_selectors_and_rules:", init_selectors_and_rules)
+                require("orange.utils.sputils").log(ngx.ERR, "load data of plugin[" .. v .. "] error, init_enable:", init_enable, " init_meta:", init_meta, " init_selectors_and_rules:", init_selectors_and_rules)
                 return false
             else
-                ngx.log(ngx.INFO, "load data of plugin[" .. v .. "] success")
+                require("orange.utils.sputils").log(ngx.INFO, "load data of plugin[" .. v .. "] success")
             end
         end
     end, function()
@@ -526,7 +526,7 @@ function _M.load_data_by_mysql(store, plugin)
     end)
 
     if not ok or e then
-        ngx.log(ngx.ERR, "[load plugin's data error], plugin:", plugin, " error:", e)
+        require("orange.utils.sputils").log(ngx.ERR, "[load plugin's data error], plugin:", plugin, " error:", e)
         return false
     end
 

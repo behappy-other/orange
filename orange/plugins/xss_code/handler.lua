@@ -22,7 +22,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, args)
                 -- log
                 local handle = rule.handle
                 if handle and handle.log == true then
-                    ngx.log(ngx.ERR, "[XssCode] start handling: ", rule.id, ":", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.ERR, "[XssCode] start handling: ", rule.id, ":", ngx_var_uri)
                 end
 
                 if handle.continue == true then
@@ -64,7 +64,7 @@ function XssCodeHandler:access(conf)
     local params = sputils.getReqParamsStr(ngx)
     local ngx_var_uri = ngx.var.uri
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[XssCode][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[XssCode][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -76,7 +76,7 @@ function XssCodeHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[XssCode][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[XssCode][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local filter_res = filter_rules(sid, "xss_code", ngx_var_uri, params)
@@ -88,7 +88,7 @@ function XssCodeHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[XssCode][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[XssCode][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

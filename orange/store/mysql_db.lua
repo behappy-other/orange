@@ -18,27 +18,27 @@ function DB:exec(sql)
     local conf = self.conf
     local db, err = mysql:new()
     if not db then
-        ngx.log(ngx.ERR, "failed to instantiate mysql: ", err)
+        require("orange.utils.sputils").log(ngx.ERR, "failed to instantiate mysql: ", err)
         return
     end
     db:set_timeout(conf.timeout) -- 1 sec
 
     local ok, err, errno, sqlstate = db:connect(conf.connect_config)
     if not ok then
-        ngx.log(ngx.ERR, "failed to connect: ", err, ": ", errno, " ", sqlstate)
+        require("orange.utils.sputils").log(ngx.ERR, "failed to connect: ", err, ": ", errno, " ", sqlstate)
         return
     end
 
-    ngx.log(ngx.INFO, "connected to mysql, reused_times:", db:get_reused_times(), " sql:", sql)
+    require("orange.utils.sputils").log(ngx.INFO, "connected to mysql, reused_times:", db:get_reused_times(), " sql:", sql)
 
     local res, err, errno, sqlstate = db:query(sql)
     if not res or err then
-        ngx.log(ngx.ERR, "bad result: ", err, ": ", errno, ": ", sqlstate, ".")
+        require("orange.utils.sputils").log(ngx.ERR, "bad result: ", err, ": ", errno, ": ", sqlstate, ".")
     end
 
     local ok, err = db:set_keepalive(conf.pool_config.max_idle_timeout, conf.pool_config.pool_size)
     if not ok then
-        ngx.log(ngx.ERR, "failed to set keepalive: ", err)
+        require("orange.utils.sputils").log(ngx.ERR, "failed to set keepalive: ", err)
     end
 
     return res, err, errno, sqlstate

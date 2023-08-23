@@ -11,7 +11,7 @@ function KafkaHandler:new(store)
 end
 
 local function errlog(...)
-    ngx.log(ngx.ERR,'[Kafka]',...)
+    require("orange.utils.sputils").log(ngx.ERR,'[Kafka]',...)
 end
 
 local do_log = function(log_table)

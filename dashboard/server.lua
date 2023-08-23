@@ -62,7 +62,7 @@ function _M:build_app()
 
     -- error handle middleware
     app:erroruse(function(err, req, res, next)
-        ngx.log(ngx.ERR, err)
+        require("orange.utils.sputils").log(ngx.ERR, err)
         local is_json_accept = string_find(req.headers["Accept"], "application/json")
 
         if req:is_found() ~= true then

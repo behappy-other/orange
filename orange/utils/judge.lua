@@ -19,7 +19,7 @@ function _M.parse_conditions(expression, params)
     local new_params = {}
     for i, v in ipairs(params) do
         if v == nil or type(v) ~= "boolean" then
-            ngx.log(ngx.ERR, "condition value[", v, "] is nil or not a `boolean` value.")
+            require("orange.utils.sputils").log(ngx.ERR, "condition value[", v, "] is nil or not a `boolean` value.")
             return false
         end
         table_insert(new_params, v)
@@ -92,13 +92,13 @@ function _M.filter_complicated_conditions(expression, conditions, plugin_name)
     local pass = false
     local func, err = loadstring("return " .. condition)
     if not func or err then
-        ngx.log(ngx.ERR, "failed to load script: ", condition)
+        require("orange.utils.sputils").log(ngx.ERR, "failed to load script: ", condition)
         return false
     end
 
     pass = func()
     if pass then
-        ngx.log(ngx.INFO, "[", plugin_name or "", "]filter_complicated_conditions: ", expression)
+        require("orange.utils.sputils").log(ngx.INFO, "[", plugin_name or "", "]filter_complicated_conditions: ", expression)
     end
 
     return pass

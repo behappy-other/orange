@@ -18,7 +18,7 @@ local HEADERS = {
 local loaded_plugins = {}
 
 local function load_node_plugins(config, store)
-    ngx.log(ngx.DEBUG, "Discovering used plugins")
+    require("orange.utils.sputils").log(ngx.DEBUG, "Discovering used plugins")
 
     local sorted_plugins = {}
     local plugins = config.plugins
@@ -26,9 +26,9 @@ local function load_node_plugins(config, store)
     for _, v in ipairs(plugins) do
         local loaded, plugin_handler = utils.load_module_if_exists("orange.plugins." .. v .. ".handler")
         if not loaded then
-            ngx.log(ngx.WARN, "The following plugin is not installed or has no handler: " .. v)
+            require("orange.utils.sputils").log(ngx.WARN, "The following plugin is not installed or has no handler: " .. v)
         else
-            ngx.log(ngx.DEBUG, "Loading plugin: " .. v)
+            require("orange.utils.sputils").log(ngx.DEBUG, "Loading plugin: " .. v)
             table_insert(sorted_plugins, {
                 name = v,
                 handler = plugin_handler(store),
@@ -72,7 +72,7 @@ function Orange.init(options)
     end)
 
     if not status or err then
-        ngx.log(ngx.ERR, "Startup error: " .. err)
+        require("orange.utils.sputils").log(ngx.ERR, "Startup error: " .. err)
         os.exit(1)
     end
 
@@ -103,7 +103,7 @@ function Orange.init_worker()
             end, Orange.data.store, Orange.data.config)
 
             if not ok then
-                ngx.log(ngx.ERR, "failed to create the timer: ", err)
+                require("orange.utils.sputils").log(ngx.ERR, "failed to create the timer: ", err)
                 return os.exit(1)
             end
     end

@@ -53,7 +53,7 @@ local function send_result(res, format, value)
             value = json.decode(value)
         end, function(err)
             local trace = traceback(err, 2)
-            ngx.log(ngx.ERR, "decode as json format error: ", trace)
+            require("orange.utils.sputils").log(ngx.ERR, "decode as json format error: ", trace)
         end)
 
         res:json({
@@ -338,7 +338,7 @@ API:get("/kvstore/get", function(store)
         end
 
         local value = ngx_shared_dict:get(key)
-        ngx.log(ngx.INFO, dict, " ", key, " ", format, " v:", value)
+        require("orange.utils.sputils").log(ngx.INFO, dict, " ", key, " ", format, " v:", value)
         send_result(res, format, value)
     end
 end)
@@ -427,7 +427,7 @@ API:post("/kvstore/set", function(store)
         end
 
         if log then
-            ngx.log(ngx.INFO, string_format("kvstore-set, dict: %s, key: %s, value: [[%s]], success: %s", dict, key, value, success))
+            require("orange.utils.sputils").log(ngx.INFO, string_format("kvstore-set, dict: %s, key: %s, value: [[%s]], success: %s", dict, key, value, success))
         end
 
         if success then

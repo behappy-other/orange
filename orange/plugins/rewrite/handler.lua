@@ -33,7 +33,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
                     local to_rewrite = handle_util.build_uri(rule.extractor.type, handle.uri_tmpl, variables)
                     if to_rewrite and to_rewrite ~= ngx_var_uri then
                         if handle.log == true then
-                            ngx.log(ngx.INFO, "[Rewrite] ", ngx_var_uri, " to:", to_rewrite)
+                            require("orange.utils.sputils").log(ngx.INFO, "[Rewrite] ", ngx_var_uri, " to:", to_rewrite)
                         end
 
                         local from, to, err = ngx_re_find(to_rewrite, "[?]{1}", "jo")
@@ -82,7 +82,7 @@ function RewriteHandler:rewrite(conf)
 
     local ngx_var_uri = ngx.var.uri
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[Rewrite][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[Rewrite][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -94,7 +94,7 @@ function RewriteHandler:rewrite(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Rewrite][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Rewrite][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "rewrite", ngx_var_uri)
@@ -104,7 +104,7 @@ function RewriteHandler:rewrite(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Rewrite][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Rewrite][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

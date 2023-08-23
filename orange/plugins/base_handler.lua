@@ -14,35 +14,35 @@ function BasePlugin:get_name()
 end
 
 function BasePlugin:init_worker()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": init_worker")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": init_worker")
 end
 
 function BasePlugin:redirect()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": redirect")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": redirect")
 end
 
 function BasePlugin:rewrite()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": rewrite")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": rewrite")
 end
 
 function BasePlugin:access()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": access")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": access")
 end
 
 function BasePlugin:balancer()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": balancer")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": balancer")
 end
 
 function BasePlugin:header_filter()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": header_filter")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": header_filter")
 end
 
 function BasePlugin:body_filter()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": body_filter")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": body_filter")
 end
 
 function BasePlugin:log()
-    ngx.log(ngx.DEBUG, " executing plugin \"", self._name, "\": log")
+    require("orange.utils.sputils").log(ngx.DEBUG, " executing plugin \"", self._name, "\": log")
 end
 
 return BasePlugin

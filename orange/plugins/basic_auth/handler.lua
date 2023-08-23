@@ -49,7 +49,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, authorization)
             if pass then
                 if handle.credentials then
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[BasicAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[BasicAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
 
                     local authorized = is_authorized(authorization, handle.credentials)
@@ -61,7 +61,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, authorization)
                     end
                 else
                     if handle.log == true then
-                        ngx.log(ngx.INFO, "[BasicAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.sputils").log(ngx.INFO, "[BasicAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
                     ngx.exit(tonumber(handle.code) or 401)
 
@@ -85,25 +85,25 @@ end
 
 function BasicAuthHandler:access(conf)
     BasicAuthHandler.super.access(self)
-    
+
     local enable = orange_db.get("basic_auth.enable")
     local meta = orange_db.get_json("basic_auth.meta")
     local selectors = orange_db.get_json("basic_auth.selectors")
     local ordered_selectors = meta and meta.selectors
-    
+
     if not enable or enable ~= true or not meta or not ordered_selectors or not selectors then
         return
     end
-    
+
     local ngx_var_uri = ngx.var.uri
     local headers = ngx.req.get_headers()
     local authorization = headers and (headers["Authorization"] or headers["authorization"])
 
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[BasicAuth][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[BasicAuth][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
-            local selector_pass 
+            local selector_pass
             if selector.type == 0 then -- 全流量选择器
                 selector_pass = true
             else
@@ -112,7 +112,7 @@ function BasicAuthHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[BasicAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[BasicAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "basic_auth", ngx_var_uri, authorization)
@@ -122,12 +122,12 @@ function BasicAuthHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[BasicAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[BasicAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end
     end
-    
+
 end
 
 return BasicAuthHandler

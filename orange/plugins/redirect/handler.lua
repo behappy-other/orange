@@ -50,7 +50,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, ngx_var_host, ngx_var_sche
                         end
 
                         if handle.log == true then
-                            ngx.log(ngx.INFO, "[Redirect] ", ngx_var_uri, " to:", to_redirect)
+                            require("orange.utils.sputils").log(ngx.INFO, "[Redirect] ", ngx_var_uri, " to:", to_redirect)
                         end
 
                         ngx_redirect(to_redirect, redirect_status)
@@ -92,7 +92,7 @@ function RedirectHandler:redirect()
     local ngx_var_args = ngx_var.args
 
     for i, sid in ipairs(ordered_selectors) do
-        ngx.log(ngx.INFO, "==[Redirect][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.sputils").log(ngx.INFO, "==[Redirect][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -104,7 +104,7 @@ function RedirectHandler:redirect()
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Redirect][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Redirect][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "redirect", ngx_var_uri, ngx_var_host, ngx_var_scheme, ngx_var_args)
@@ -114,7 +114,7 @@ function RedirectHandler:redirect()
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    ngx.log(ngx.INFO, "[Redirect][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.sputils").log(ngx.INFO, "[Redirect][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

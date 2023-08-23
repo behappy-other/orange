@@ -15,7 +15,7 @@ return function(opts)
             if not seed then
                 seed = utils.get_random_seed()
             else
-                ngx.log(ngx.ERR, "The seed random number generator seed has already seeded with: " .. seed .. "\n")
+                require("orange.utils.sputils").log(ngx.ERR, "The seed random number generator seed has already seeded with: " .. seed .. "\n")
             end
             randomseed(seed)
             return seed
