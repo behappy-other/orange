@@ -59,7 +59,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
 
                     if current_stat >= handle.count then
                         if handle.log == true then
-                            require("orange.utils.sputils").log(ngx.INFO, "[RateLimiting-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri, " limit:", handle.count, " reached:", current_stat, " remaining:", 0)
+                            require("orange.utils.logutils").log(ngx.INFO, "[RateLimiting-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri, " limit:", handle.count, " reached:", current_stat, " remaining:", 0)
                         end
 
                         ngx.header["X-RateLimit-Remaining" .. "-" .. limit_type] = 0
@@ -71,7 +71,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
 
                         -- only for test, comment it in production
                         -- if handle.log == true then
-                        --     require("orange.utils.sputils").log(ngx.INFO, "[RateLimiting-Rule] ", rule.name, " uri:", ngx_var_uri, " limit:", handle.count, " reached:", current_stat + 1)
+                        --     require("orange.utils.logutils").log(ngx.INFO, "[RateLimiting-Rule] ", rule.name, " uri:", ngx_var_uri, " limit:", handle.count, " reached:", current_stat + 1)
                         -- end
                     end
                 end
@@ -106,7 +106,7 @@ function RateLimitingHandler:access(conf)
 
     local ngx_var_uri = ngx.var.uri
     for i, sid in ipairs(ordered_selectors) do
-        require("orange.utils.sputils").log(ngx.INFO, "==[RateLimiting][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.logutils").log(ngx.INFO, "==[RateLimiting][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -118,7 +118,7 @@ function RateLimitingHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[RateLimiting][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[RateLimiting][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "rate_limiting", ngx_var_uri)
@@ -128,7 +128,7 @@ function RateLimitingHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[RateLimiting][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[RateLimiting][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

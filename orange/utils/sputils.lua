@@ -194,10 +194,10 @@ end
 function _M.log(level, ...)
     local r = get_request()
     if not r then
-        return ngx.log(level, '[',os.date("%Y-%m-%d %H:%M:%S") ,'] ~ gateway_orange_service ~ ', '-',' ~ ', '-', ' ~ ', ngx.var.remote_addr, ' ~ ', ...)
+        return require("orange.utils.logutils").log(level, '[',os.date("%Y-%m-%d %H:%M:%S") ,'] ~ gateway_orange_service ~ ', '-',' ~ ', '-', ' ~ ', ngx.var.remote_addr, ' ~ ', ...)
     end
     local headers = ngx.req.get_headers()
-    ngx.log(level, '[',os.date("%Y-%m-%d %H:%M:%S") ,'] ~ gateway_orange_service ~ ', (headers["trace-id"] or "-"), ' ~ ', '-', ' ~ ', ngx.var.remote_addr, ' ~ ', ...)
+    require("orange.utils.logutils").log(level, '[',os.date("%Y-%m-%d %H:%M:%S") ,'] ~ gateway_orange_service ~ ', (headers["trace-id"] or "-"), ' ~ ', '-', ' ~ ', ngx.var.remote_addr, ' ~ ', ...)
 end
 
 function _M.tableUniq(table1)

@@ -27,12 +27,12 @@ function MySQLStore:query(opts)
 
     res, err = self.db:query(sql, params)
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "MySQLStore:query, error:", err, " sql:", sql)
+        require("orange.utils.logutils").log(ngx.ERR, "MySQLStore:query, error:", err, " sql:", sql)
         return nil
     end
 
     if res and type(res) == "table" and #res <= 0 then
-        require("orange.utils.sputils").log(ngx.WARN, "MySQLStore:query empty, sql:", sql)
+        require("orange.utils.logutils").log(ngx.WARN, "MySQLStore:query empty, sql:", sql)
     end
 
     return res
@@ -52,7 +52,7 @@ function MySQLStore:insert(opts)
     if res and not err then
         return true
     else
-        require("orange.utils.sputils").log(ngx.ERR, "MySQLStore:insert error:", err)
+        require("orange.utils.logutils").log(ngx.ERR, "MySQLStore:insert error:", err)
         return false
     end
 end
@@ -70,7 +70,7 @@ function MySQLStore:delete(opts)
     if res and not err then
         return true
     else
-        require("orange.utils.sputils").log(ngx.ERR, "MySQLStore:delete error:", err)
+        require("orange.utils.logutils").log(ngx.ERR, "MySQLStore:delete error:", err)
         return false
     end
 end
@@ -88,7 +88,7 @@ function MySQLStore:update(opts)
     if res and not err then
         return true
     else
-        require("orange.utils.sputils").log(ngx.ERR, "MySQLStore:update error:", err)
+        require("orange.utils.logutils").log(ngx.ERR, "MySQLStore:update error:", err)
         return false
     end
 end

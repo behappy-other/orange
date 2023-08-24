@@ -24,7 +24,7 @@ local function filter_rules(sid, plugin, ngx_var_uri)
                 local handle = rule.handle
                 if handle then
                     if handle.log == true then
-                        require("orange.utils.sputils").log(ngx.INFO, "[Monitor] ", rule.id, ":", ngx_var_uri)
+                        require("orange.utils.logutils").log(ngx.INFO, "[Monitor] ", rule.id, ":", ngx_var_uri)
                     end
 
                     if handle.continue == true then
@@ -62,7 +62,7 @@ function URLMonitorHandler:log(conf)
 
     local ngx_var_uri = ngx.var.uri
     for i, sid in ipairs(ordered_selectors) do
-        require("orange.utils.sputils").log(ngx.INFO, "==[Monitor][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.logutils").log(ngx.INFO, "==[Monitor][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -74,7 +74,7 @@ function URLMonitorHandler:log(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[Monitor][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[Monitor][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "monitor", ngx_var_uri)
@@ -84,7 +84,7 @@ function URLMonitorHandler:log(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[Monitor][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[Monitor][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

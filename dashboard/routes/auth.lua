@@ -59,10 +59,10 @@ return function(config, store)
         if isExist == true then
             local is_admin = false
             if user.is_admin == 1 then
-                require("orange.utils.sputils").log(ngx.INFO, "管理员[", user.username, "]登录")
+                require("orange.utils.logutils").log(ngx.INFO, "管理员[", user.username, "]登录")
                 is_admin = true
             else
-                require("orange.utils.sputils").log(ngx.INFO, "普通用户[", user.username, "]登录")
+                require("orange.utils.logutils").log(ngx.INFO, "普通用户[", user.username, "]登录")
             end
 
             req.session.set("user", {

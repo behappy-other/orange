@@ -21,7 +21,7 @@ function BaseRedis.get(cache_prefix, key)
     key = cache_prefix .. ":" .. key
     local res, err = cache:get(key)
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to get Redis key: ", err .. '，Redis key is：' .. key)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to get Redis key: ", err .. '，Redis key is：' .. key)
         return nil
     end
     return tonumber(res)
@@ -31,7 +31,7 @@ function BaseRedis.get_string(cache_prefix, key)
     key = cache_prefix .. ":" .. key
     local res, err = cache:get(key)
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to get Redis key: ", err .. '，Redis key is：' .. key)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to get Redis key: ", err .. '，Redis key is：' .. key)
         return nil
     end
     return res
@@ -46,7 +46,7 @@ function BaseRedis.set(cache_prefix, key, value, ttl)
         res, err = cache:set(key, value)
     end
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to set Redis key: ", err .. '，Redis key is：' .. key .. '，Redis value is：' .. value)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to set Redis key: ", err .. '，Redis key is：' .. key .. '，Redis value is：' .. value)
         return nil
     end
     return res
@@ -61,7 +61,7 @@ function BaseRedis.setnx(cache_prefix, key, value, ttl)
         res, err = cache:setnx(key, value)
     end
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to setnx Redis key: ", err .. '，Redis key is：' .. key .. '，Redis value is：' .. value)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to setnx Redis key: ", err .. '，Redis key is：' .. key .. '，Redis value is：' .. value)
         return nil
     end
     return res
@@ -83,7 +83,7 @@ function BaseRedis.incr(cache_prefix, key, delta, ttl)
         cache:expire(key, ttl)
     end
     if err then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to incr Redis key: " .. err .. '，Redis key is：' .. key .. '，Redis value is：' .. delta)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to incr Redis key: " .. err .. '，Redis key is：' .. key .. '，Redis value is：' .. delta)
         return nil
     end
     return res
@@ -104,7 +104,7 @@ function BaseRedis.scan(prefix, cursor, count)
     prefix = prefix .. ":*"
     local res, err = cache:scan(cursor, "count", count, "match", prefix)
     if not res then
-        require("orange.utils.sputils").log(ngx.ERR, "failed to scan: ", err)
+        require("orange.utils.logutils").log(ngx.ERR, "failed to scan: ", err)
         return
     end
     local cursor, keys, err = unpack(res)

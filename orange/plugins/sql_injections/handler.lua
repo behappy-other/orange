@@ -23,7 +23,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, args)
                 -- log
                 local handle = rule.handle
                 if handle and handle.log == true then
-                    require("orange.utils.sputils").log(ngx.ERR, "[SqlInjections] start handling: ", rule.id, ":", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.ERR, "[SqlInjections] start handling: ", rule.id, ":", ngx_var_uri)
                 end
 
                 if handle.continue == true then
@@ -65,7 +65,7 @@ function SqlInjectionsHandler:access(conf)
     local params = sputils.getReqParamsStr(ngx)
     local ngx_var_uri = ngx.var.uri
     for i, sid in ipairs(ordered_selectors) do
-        require("orange.utils.sputils").log(ngx.INFO, "==[SqlInjections][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.logutils").log(ngx.INFO, "==[SqlInjections][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -77,7 +77,7 @@ function SqlInjectionsHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[SqlInjections][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[SqlInjections][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local filter_res = filter_rules(sid, "sql_injections", ngx_var_uri, params)
@@ -89,7 +89,7 @@ function SqlInjectionsHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[SqlInjections][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[SqlInjections][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

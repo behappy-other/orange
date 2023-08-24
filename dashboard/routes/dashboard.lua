@@ -10,7 +10,7 @@ local json = require "cjson"
 
 local function load_plugin_api(plugin, dashboard_router, store)
     local plugin_api_path = "orange.plugins." .. plugin .. ".api"
-    require("orange.utils.sputils").log(ngx.ERR, "[plugin's api load], plugin_api_path:", plugin_api_path)
+    require("orange.utils.logutils").log(ngx.ERR, "[plugin's api load], plugin_api_path:", plugin_api_path)
 
     local ok, plugin_api, e
     ok = xpcall(function()
@@ -19,7 +19,7 @@ local function load_plugin_api(plugin, dashboard_router, store)
         e = debug.traceback()
     end)
     if not ok or not plugin_api or type(plugin_api) ~= "table" then
-        require("orange.utils.sputils").log(ngx.ERR, "[plugin's api load error], plugin_api_path:", plugin_api_path, " error:", e)
+        require("orange.utils.logutils").log(ngx.ERR, "[plugin's api load error], plugin_api_path:", plugin_api_path, " error:", e)
         return
     end
 
@@ -31,7 +31,7 @@ local function load_plugin_api(plugin, dashboard_router, store)
     end
 
     for uri, api_methods in pairs(plugin_apis) do
-        require("orange.utils.sputils").log(ngx.INFO, "load route, uri:", uri)
+        require("orange.utils.logutils").log(ngx.INFO, "load route, uri:", uri)
         if type(api_methods) == "table" then
             for method, func in pairs(api_methods) do
                 local m = string_lower(method)
@@ -191,7 +191,7 @@ return function(config, store)
     --- 加载其他"可用"插件API
     local available_plugins = config.plugins
     if not available_plugins or type(available_plugins) ~= "table" or #available_plugins<1 then
-        require("orange.utils.sputils").log(ngx.ERR, "no available plugins, maybe you should check `orange.conf`.")
+        require("orange.utils.logutils").log(ngx.ERR, "no available plugins, maybe you should check `orange.conf`.")
     else
         for _, p in ipairs(available_plugins) do
             load_plugin_api(p, dashboard_router, store)

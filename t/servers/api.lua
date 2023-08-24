@@ -100,7 +100,7 @@ function _M.go(uri, method, body)
     )
 
     if not res then
-        require("orange.utils.sputils").log(ngx.ERR, "failed http: ", err)
+        require("orange.utils.logutils").log(ngx.ERR, "failed http: ", err)
         return 404, "Not Found", nil
     end
 

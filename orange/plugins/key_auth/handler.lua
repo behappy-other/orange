@@ -101,7 +101,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, headers, body, query)
                 local handle = rule.handle
                 if handle.credentials then
                     if handle.log == true then
-                        require("orange.utils.sputils").log(ngx.INFO, "[KeyAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.logutils").log(ngx.INFO, "[KeyAuth-Pass-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
 
                     local authorized = is_authorized(handle.credentials, headers, query, body)
@@ -113,7 +113,7 @@ local function filter_rules(sid, plugin, ngx_var_uri, headers, body, query)
                     end
                 else
                     if handle.log == true then
-                        require("orange.utils.sputils").log(ngx.INFO, "[KeyAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
+                        require("orange.utils.logutils").log(ngx.INFO, "[KeyAuth-Forbidden-Rule] ", rule.name, " uri:", ngx_var_uri)
                     end
                     ngx.exit(tonumber(handle.code) or 401)
 
@@ -154,7 +154,7 @@ function KeyAuthHandler:access(conf)
     local ngx_var_uri = ngx.var.uri
 
     for i, sid in ipairs(ordered_selectors) do
-        require("orange.utils.sputils").log(ngx.INFO, "==[KeyAuth][PASS THROUGH SELECTOR:", sid, "]")
+        require("orange.utils.logutils").log(ngx.INFO, "==[KeyAuth][PASS THROUGH SELECTOR:", sid, "]")
         local selector = selectors[sid]
         if selector and selector.enable == true then
             local selector_pass
@@ -166,7 +166,7 @@ function KeyAuthHandler:access(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[KeyAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[KeyAuth][PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
 
                 local stop = filter_rules(sid, "key_auth", ngx_var_uri, headers, body, query)
@@ -176,7 +176,7 @@ function KeyAuthHandler:access(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[KeyAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
+                    require("orange.utils.logutils").log(ngx.INFO, "[KeyAuth][NOT-PASS-SELECTOR:", sid, "] ", ngx_var_uri)
                 end
             end
         end

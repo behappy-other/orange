@@ -9,7 +9,7 @@ local lor = require("lor.index")
 
 local function load_plugin_api(plugin, api_router, store)
     local plugin_api_path = "orange.plugins." .. plugin .. ".api"
-    require("orange.utils.sputils").log(ngx.INFO, "[plugin's api load], plugin_api_path:", plugin_api_path)
+    require("orange.utils.logutils").log(ngx.INFO, "[plugin's api load], plugin_api_path:", plugin_api_path)
 
     local ok, plugin_api, e
     ok = xpcall(function()
@@ -18,7 +18,7 @@ local function load_plugin_api(plugin, api_router, store)
         e = debug.traceback()
     end)
     if not ok or not plugin_api or type(plugin_api) ~= "table" then
-        require("orange.utils.sputils").log(ngx.ERR, "[plugin's api load error], plugin_api_path:", plugin_api_path, " error:", e)
+        require("orange.utils.logutils").log(ngx.ERR, "[plugin's api load error], plugin_api_path:", plugin_api_path, " error:", e)
         return
     end
 
@@ -30,7 +30,7 @@ local function load_plugin_api(plugin, api_router, store)
     end
 
     for uri, api_methods in pairs(plugin_apis) do
-        -- require("orange.utils.sputils").log(ngx.INFO, "load route, uri:", uri)
+        -- require("orange.utils.logutils").log(ngx.INFO, "load route, uri:", uri)
         if type(api_methods) == "table" then
             for method, func in pairs(api_methods) do
                 local m = string_lower(method)

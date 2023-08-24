@@ -44,7 +44,7 @@ local function extract_variable(extraction)
         ngx.req.read_body()
         local post_params, err = ngx.req.get_post_args()
         if not post_params or err then
-            require("orange.utils.sputils").log(ngx.ERR, "[Extract Variable]failed to get post args: ", err)
+            require("orange.utils.logutils").log(ngx.ERR, "[Extract Variable]failed to get post args: ", err)
             return false
         end
         result = post_params[extraction.name]
@@ -61,7 +61,7 @@ local function extract_variable(extraction)
         local data = ngx.req.get_body_data()
         local post_params = cjson.decode(data)
         if not post_params then
-            require("orange.utils.sputils").log(ngx.ERR, "[Extract Variable]failed to get post args")
+            require("orange.utils.logutils").log(ngx.ERR, "[Extract Variable]failed to get post args")
             return false
         end
         result = post_params[extraction.name]
@@ -127,7 +127,7 @@ local function extract_variable_for_template(extractions)
             ngx.req.read_body()
             local post_params, err = ngx.req.get_post_args()
             if not post_params or err then
-                require("orange.utils.sputils").log(ngx.ERR, "[Extract Variable]failed to get post args: ", err)
+                require("orange.utils.logutils").log(ngx.ERR, "[Extract Variable]failed to get post args: ", err)
                 ok = false
             end
 
@@ -149,7 +149,7 @@ local function extract_variable_for_template(extractions)
             local data = ngx.req.get_body_data()
             local post_params = cjson.decode(data)
             if not post_params then
-                require("orange.utils.sputils").log(ngx.ERR, "[Extract Variable]failed to get post args")
+                require("orange.utils.logutils").log(ngx.ERR, "[Extract Variable]failed to get post args")
                 ok = false
             end
 
@@ -195,10 +195,10 @@ function _M.extract(extractor_type, extractions)
     -- for i, v in pairs(result) do
     --     if type(v) == "table" then
     --          for j, m in pairs(v) do
-    --             require("orange.utils.sputils").log(ngx.INFO, i, ":", j, ":", m)
+    --             require("orange.utils.logutils").log(ngx.INFO, i, ":", j, ":", m)
     --          end
     --     else
-    --         require("orange.utils.sputils").log(ngx.INFO, i, ":", v)
+    --         require("orange.utils.logutils").log(ngx.INFO, i, ":", v)
     --     end
     -- end
 

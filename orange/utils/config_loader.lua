@@ -8,7 +8,7 @@ function _M.load(config_path)
     local config_contents = IO.read_file(config_path)
 
     if not config_contents then
-        require("orange.utils.sputils").log(ngx.ERR, "No configuration file at: ", config_path)
+        require("orange.utils.logutils").log(ngx.ERR, "No configuration file at: ", config_path)
         os.exit(1)
     end
 

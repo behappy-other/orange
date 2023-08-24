@@ -56,7 +56,7 @@ return function(config, store)
                 local authorization = encode_base64(string_format("%s:%s", node.api_username, node.api_password))
                 local path = '/node/sync?seed=' .. ngx.time()
 
-                require("orange.utils.sputils").log(ngx.INFO, url .. path)
+                require("orange.utils.logutils").log(ngx.INFO, url .. path)
 
                 local resp, err = httpc:request_uri(url, {
                     method = "POST",
@@ -69,10 +69,10 @@ return function(config, store)
                 local sync_status = ''
 
                 if not resp or err then
-                    require("orange.utils.sputils").log(ngx.ERR, string_format("%s : %s", nodeIp, err))
+                    require("orange.utils.logutils").log(ngx.ERR, string_format("%s : %s", nodeIp, err))
                     sync_status = '{"ERROR":false}'
                 else
-                    require("orange.utils.sputils").log(ngx.ERR, resp.body)
+                    require("orange.utils.logutils").log(ngx.ERR, resp.body)
                     local body = json.decode(resp.body)
                     sync_status = json.encode(body.data)
                 end
@@ -313,7 +313,7 @@ return function(config, store)
 
     node_router:post("/node/sync", function(req, res, next)
 
-        require("orange.utils.sputils").log(ngx.INFO, "sync configure to orange nodes")
+        require("orange.utils.logutils").log(ngx.INFO, "sync configure to orange nodes")
 
         local nodes = get_nodes()
         local results = {}

@@ -53,7 +53,7 @@ return function(plugin)
                         data = data
                     })
                 else
-                    require("orange.utils.sputils").log(ngx.ERR, "error to fetch plugin[" .. plugin .. "] config from store")
+                    require("orange.utils.logutils").log(ngx.ERR, "error to fetch plugin[" .. plugin .. "] config from store")
                     return res:json({
                         success = false,
                         msg = "error to fetch config from store"
@@ -122,7 +122,7 @@ return function(plugin)
                         msg = "succeed to load config from store"
                     })
                 else
-                    require("orange.utils.sputils").log(ngx.ERR, "error to load plugin[" .. plugin .. "] config from store")
+                    require("orange.utils.logutils").log(ngx.ERR, "error to load plugin[" .. plugin .. "] config from store")
                     return res:json({
                         success = false,
                         msg = "error to load config from store"
@@ -240,7 +240,7 @@ return function(plugin)
 
                     local success, err, forcible = orange_db.set_json(plugin .. ".selector." .. selector_id .. ".rules", new_rules)
                     if err or forcible then
-                        require("orange.utils.sputils").log(ngx.ERR, "update local rules error when modifing:", err, ":", forcible)
+                        require("orange.utils.logutils").log(ngx.ERR, "update local rules error when modifing:", err, ":", forcible)
                         return res:json({
                             success = false,
                             msg = "update local rules error when modifing"
@@ -368,7 +368,7 @@ return function(plugin)
                 local update_selector_result, update_local_selectors_result, update_local_selector_rules_result
                 local selector = dao.get_selector(plugin, store, selector_id)
                 if not selector or not selector.value then
-                    require("orange.utils.sputils").log(ngx.ERR, "error to find selector when resorting rules of it")
+                    require("orange.utils.logutils").log(ngx.ERR, "error to find selector when resorting rules of it")
                     return res:json({
                         success = true,
                         msg = "error to find selector when resorting rules of it"
@@ -392,7 +392,7 @@ return function(plugin)
                     end
                 end
 
-                require("orange.utils.sputils").log(ngx.ERR, "error to update local data when resorting rules, update_selector_result:", update_selector_result, " update_local_selectors_result:", update_local_selectors_result, " update_local_selector_rules_result:", update_local_selector_rules_result)
+                require("orange.utils.logutils").log(ngx.ERR, "error to update local data when resorting rules, update_selector_result:", update_selector_result, " update_local_selectors_result:", update_local_selectors_result, " update_local_selector_rules_result:", update_local_selector_rules_result)
                 res:json({
                     success = false,
                     msg = "fail to resort rules"
@@ -451,7 +451,7 @@ return function(plugin)
 
                 local to_del_rules_ids = to_del_selector.rules or {}
                 local d_result = dao.delete_rules_of_selector(plugin, store, to_del_rules_ids)
-                require("orange.utils.sputils").log(ngx.INFO, "delete rules of selector:", d_result)
+                require("orange.utils.logutils").log(ngx.INFO, "delete rules of selector:", d_result)
 
                 -- update meta
                 local meta = dao.get_meta(plugin, store)
@@ -498,7 +498,7 @@ return function(plugin)
                         msg = "succeed to delete selector"
                     })
                 else
-                    require("orange.utils.sputils").log(ngx.ERR, "error to delete selector, update_meta:", update_local_meta_result, " update_selectors:", update_local_selectors_result)
+                    require("orange.utils.logutils").log(ngx.ERR, "error to delete selector, update_meta:", update_local_meta_result, " update_selectors:", update_local_selectors_result)
                     return res:json({
                         success = false,
                         msg = "error to udpate local data when deleting selector"
@@ -546,7 +546,7 @@ return function(plugin)
                             msg = "succeed to create selector"
                         })
                     else
-                        require("orange.utils.sputils").log(ngx.ERR, "error to create selector, update_meta:", update_local_meta_result, " update_selectors:", update_local_selectors_result)
+                        require("orange.utils.logutils").log(ngx.ERR, "error to create selector, update_meta:", update_local_meta_result, " update_selectors:", update_local_selectors_result)
                         return res:json({
                             success = false,
                             msg = "error to udpate local data when creating selector"
@@ -584,7 +584,7 @@ return function(plugin)
                 end
 
                 -- update rule
-                --require("orange.utils.sputils").log(ngx.ERR, old_selector.rules);
+                --require("orange.utils.logutils").log(ngx.ERR, old_selector.rules);
                 selector.rules = old_selector.rules or {}
                 selector.time = utils.now()
 
@@ -638,7 +638,7 @@ return function(plugin)
                 local update_meta_result, update_local_meta_result
                 local meta = dao.get_meta(plugin, store)
                 if not meta or not meta.value then
-                    require("orange.utils.sputils").log(ngx.ERR, "error to find meta when resorting selectors")
+                    require("orange.utils.logutils").log(ngx.ERR, "error to find meta when resorting selectors")
                     return res:json({
                         success = true,
                         msg = "error to find meta when resorting selectors"
@@ -658,7 +658,7 @@ return function(plugin)
                         msg = "succeed to resort selectors"
                     })
                 else
-                    require("orange.utils.sputils").log(ngx.ERR, "error to update local meta when resorting selectors, update_meta_result:", update_meta_result, " update_local_meta_result:", update_local_meta_result)
+                    require("orange.utils.logutils").log(ngx.ERR, "error to update local meta when resorting selectors, update_meta_result:", update_meta_result, " update_local_meta_result:", update_local_meta_result)
                     res:json({
                         success = false,
                         msg = "fail to resort selectors"

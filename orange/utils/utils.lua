@@ -235,7 +235,7 @@ do
         local buf = ffi_new(bytes_buf_t, n_bytes)
 
         if C.RAND_bytes(buf, n_bytes) == 0 then
-            require("orange.utils.sputils").log(ngx.ERR, "could not get random bytes, using ngx.time() + ngx.worker.pid() instead")
+            require("orange.utils.logutils").log(ngx.ERR, "could not get random bytes, using ngx.time() + ngx.worker.pid() instead")
             return ngx.time() + ngx.worker.pid()
         end
 

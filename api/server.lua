@@ -73,7 +73,7 @@ function _M:build_app()
 
     -- error handle middleware
     app:erroruse(function(err, req, res, next)
-        require("orange.utils.sputils").log(ngx.ERR, err)
+        require("orange.utils.logutils").log(ngx.ERR, err)
         if req:is_found() ~= true then
             return res:status(404):json({
                 success = false,

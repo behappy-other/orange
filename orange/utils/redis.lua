@@ -164,7 +164,7 @@ function _M.commit_pipeline( self )
 
     if is_redis_null(results) then
         results = {}
-        require("orange.utils.sputils").log(ngx.WARN, "is null")
+        require("orange.utils.logutils").log(ngx.WARN, "is null")
     end
     -- table.remove (results , 1)
 
@@ -202,7 +202,7 @@ local function do_command(self, cmd, ... )
     local fun = redis[cmd]
     local result, err = fun(redis, ...)
     if not result or err then
-        -- require("orange.utils.sputils").log(ngx.ERR, "pipeline result:", result, " err:", err)
+        -- require("orange.utils.logutils").log(ngx.ERR, "pipeline result:", result, " err:", err)
         return nil, err
     end
 

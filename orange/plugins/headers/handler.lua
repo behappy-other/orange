@@ -57,7 +57,7 @@ function HeaderHandler:rewrite(conf)
 
     for i, sid in ipairs(ordered_selectors) do
         local selector = selectors[sid]
-        require("orange.utils.sputils").log(ngx.INFO, "==[Headers][START SELECTOR:", sid, "][NAME:",selector.name,']')
+        require("orange.utils.logutils").log(ngx.INFO, "==[Headers][START SELECTOR:", sid, "][NAME:",selector.name,']')
         if selector and selector.enable == true then
             local selector_pass
             if selector.type == 0 then -- 全流量选择器
@@ -68,7 +68,7 @@ function HeaderHandler:rewrite(conf)
 
             if selector_pass then
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[Headers][PASS-SELECTOR:", sid, "]")
+                    require("orange.utils.logutils").log(ngx.INFO, "[Headers][PASS-SELECTOR:", sid, "]")
                 end
 
                 local stop = filter_rules(sid, "headers")
@@ -77,7 +77,7 @@ function HeaderHandler:rewrite(conf)
                 end
             else
                 if selector.handle and selector.handle.log == true then
-                    require("orange.utils.sputils").log(ngx.INFO, "[Headers][NOT-PASS-SELECTOR:", sid, "] ")
+                    require("orange.utils.logutils").log(ngx.INFO, "[Headers][NOT-PASS-SELECTOR:", sid, "] ")
                 end
             end
 

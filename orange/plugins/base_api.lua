@@ -42,16 +42,16 @@ end
 
 function BaseAPI:set_api(path, method, func)
     if not path or not method or not func then
-        return require("orange.utils.sputils").log(ngx.ERR, "params should not be nil.")
+        return require("orange.utils.logutils").log(ngx.ERR, "params should not be nil.")
     end
 
     if type(path) ~= "string" or type(method) ~= "string" or type(func) ~= "function" then
-        return require("orange.utils.sputils").log(ngx.ERR, "params type error")
+        return require("orange.utils.logutils").log(ngx.ERR, "params type error")
     end
 
     method = string_upper(method)
     if not _METHODS[method] then
-        return require("orange.utils.sputils").log(ngx.ERR, string_format("[%s] method is not supported yet.", method))
+        return require("orange.utils.logutils").log(ngx.ERR, string_format("[%s] method is not supported yet.", method))
     end
 
     self._apis[path] = self._apis[path] or {}
@@ -61,7 +61,7 @@ end
 function BaseAPI:build_method()
     for m, _ in pairs(_METHODS) do
         m = string_lower(m)
-        require("orange.utils.sputils").log(ngx.INFO, "attach method " .. m .. " to BaseAPI")
+        require("orange.utils.logutils").log(ngx.INFO, "attach method " .. m .. " to BaseAPI")
         BaseAPI[m] = function(myself, path, func)
             BaseAPI.set_api(myself, path, m, func)
         end
@@ -74,7 +74,7 @@ function BaseAPI:merge_apis(apis)
             if methods and type(methods) == "table" then
                 for m, func in pairs(methods) do
                     m = string_lower(m)
-                    require("orange.utils.sputils").log(ngx.INFO, "merge method, path: ", path, " method:", m)
+                    require("orange.utils.logutils").log(ngx.INFO, "merge method, path: ", path, " method:", m)
                     self:set_api(path, m, func)
                 end
             end
