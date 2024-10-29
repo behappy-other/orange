@@ -5,8 +5,10 @@ COPY CentOS-Base.repo /etc/yum.repos.d/
 RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && yum update -y \
     && yum install -y wget \
-    # install epel, `luarocks` need it.
-    && wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+    # install epel, `luarocks` need it. \
+    # already archived to https://archives.fedoraproject.org \
+    # or use `https://mirrors.aliyun.com/epel`
+    && wget -O epel-release-latest-7.noarch.rpm https://archives.fedoraproject.org/pub/archive/epel/7/x86_64/Packages/e/epel-release-7-14.noarch.rpm \
     && rpm -ivh epel-release-latest-7.noarch.rpm \
     # install some compilation tools
     && yum install -y yum-utils git libuuid-devel pcre-devel openssl-devel gcc gcc-c++ make perl-Digest-MD5 lua-devel cmake3 curl libtool autoconf automake openresty-resty readline-devel unzip gettext kde-l10n-Chinese which net-tools swig \
